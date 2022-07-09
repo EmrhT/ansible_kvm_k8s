@@ -14,7 +14,7 @@
   register: existing_vms
   changed_when: no
 
-- name: Create VM if not exists
+- name: Create VM_haproxy if not exists
   block:
   - name: Download base image
     get_url:
@@ -23,7 +23,7 @@
       checksum: "sha256:{{ base_image_sha }}"
   - name: Copy base image to libvirt directory
     copy:
-      dest: "{{ libvirt_pool_dir }}/{{ vm_name }}.qcow2"
+      dest: "{{ libvirt_pool_dir }}/{{ vm_name_haproxy }}.qcow2"
       src: "/tmp/{{ base_image_name }}"
       force: no
       remote_src: yes
@@ -31,8 +31,8 @@
     register: copy_results
   - name: Configure the image
     command: |
-      virt-customize -a {{ libvirt_pool_dir }}/{{ vm_name }}.qcow2 \
-      --hostname {{ vm_name }} \
+      virt-customize -a {{ libvirt_pool_dir }}/{{ vm_name_haproxy }}.qcow2 \
+      --hostname {{ vm_name_haproxy }} \
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
@@ -42,12 +42,130 @@
   - name: Define vm
     community.libvirt.virt:
       command: define
-      xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
-  when: "vm_name not in existing_vms.list_vms"
+      xml: "{{ lookup('template', 'vm-template_haproxy.xml.j2') }}"
+  when: "vm_name_haproxy not in existing_vms.list_vms"
+
+- name: Create VM_master if not exists
+  block:
+  - name: Download base image
+    get_url:
+      url: "{{ base_image_url }}"
+      dest: "/tmp/{{ base_image_name }}"
+      checksum: "sha256:{{ base_image_sha }}"
+  - name: Copy base image to libvirt directory
+    copy:
+      dest: "{{ libvirt_pool_dir }}/{{ vm_name_master }}.qcow2"
+      src: "/tmp/{{ base_image_name }}"
+      force: no
+      remote_src: yes
+      mode: 0660
+    register: copy_results
+  - name: Configure the image
+    command: |
+      virt-customize -a {{ libvirt_pool_dir }}/{{ vm_name_master }}.qcow2 \
+      --hostname {{ vm_name_master }} \
+      --root-password password:{{ vm_root_pass }} \
+      --ssh-inject 'root:file:{{ ssh_key }}' \
+      --uninstall cloud-init \
+      --copy-in /home/ubuntu/ansible_kvm/01-network-manager-all.yaml:/etc/netplan \
+      --firstboot /home/ubuntu/ansible_kvm/customize-commands.sh
+    when: copy_results is changed
+  - name: Define vm
+    community.libvirt.virt:
+      command: define
+      xml: "{{ lookup('template', 'vm-template_master.xml.j2') }}"
+  when: "vm_name_master not in existing_vms.list_vms"
+
+- name: Create VM_worker1 if not exists
+  block:
+  - name: Download base image
+    get_url:
+      url: "{{ base_image_url }}"
+      dest: "/tmp/{{ base_image_name }}"
+      checksum: "sha256:{{ base_image_sha }}"
+  - name: Copy base image to libvirt directory
+    copy:
+      dest: "{{ libvirt_pool_dir }}/{{ vm_name_worker1 }}.qcow2"
+      src: "/tmp/{{ base_image_name }}"
+      force: no
+      remote_src: yes
+      mode: 0660
+    register: copy_results
+  - name: Configure the image
+    command: |
+      virt-customize -a {{ libvirt_pool_dir }}/{{ vm_name_worker1 }}.qcow2 \
+      --hostname {{ vm_name_worker1 }} \
+      --root-password password:{{ vm_root_pass }} \
+      --ssh-inject 'root:file:{{ ssh_key }}' \
+      --uninstall cloud-init \
+      --copy-in /home/ubuntu/ansible_kvm/01-network-manager-all.yaml:/etc/netplan \
+      --firstboot /home/ubuntu/ansible_kvm/customize-commands.sh
+    when: copy_results is changed
+  - name: Define vm
+    community.libvirt.virt:
+      command: define
+      xml: "{{ lookup('template', 'vm-template_worker1.xml.j2') }}"
+  when: "vm_name_worker1 not in existing_vms.list_vms"
+
+- name: Create VM_worker2 if not exists
+  block:
+  - name: Download base image
+    get_url:
+      url: "{{ base_image_url }}"
+      dest: "/tmp/{{ base_image_name }}"
+      checksum: "sha256:{{ base_image_sha }}"
+  - name: Copy base image to libvirt directory
+    copy:
+      dest: "{{ libvirt_pool_dir }}/{{ vm_name_worker2 }}.qcow2"
+      src: "/tmp/{{ base_image_name }}"
+      force: no
+      remote_src: yes
+      mode: 0660
+    register: copy_results
+  - name: Configure the image
+    command: |
+      virt-customize -a {{ libvirt_pool_dir }}/{{ vm_name_worker2 }}.qcow2 \
+      --hostname {{ vm_name_worker2 }} \
+      --root-password password:{{ vm_root_pass }} \
+      --ssh-inject 'root:file:{{ ssh_key }}' \
+      --uninstall cloud-init \
+      --copy-in /home/ubuntu/ansible_kvm/01-network-manager-all.yaml:/etc/netplan \
+      --firstboot /home/ubuntu/ansible_kvm/customize-commands.sh
+    when: copy_results is changed
+  - name: Define vm
+    community.libvirt.virt:
+      command: define
+      xml: "{{ lookup('template', 'vm-template_worker2.xml.j2') }}"
+  when: "vm_name_worker2 not in existing_vms.list_vms"
 
 - name: Ensure VM is started
   community.libvirt.virt:
-    name: "{{ vm_name }}"
+    name: "{{ vm_name_haproxy }}"
+    state: running
+  register: vm_start_results
+  until: "vm_start_results is success"
+  retries: 15
+  delay: 2
+
+- name: Ensure VM is started
+  community.libvirt.virt:
+    name: "{{ vm_name_master }}"
+    state: running
+  register: vm_start_results
+  until: "vm_start_results is success"
+  retries: 15
+  delay: 2
+- name: Ensure VM is started
+  community.libvirt.virt:
+    name: "{{ vm_name_worker1 }}"
+    state: running
+  register: vm_start_results
+  until: "vm_start_results is success"
+  retries: 15
+  delay: 2
+- name: Ensure VM is started
+  community.libvirt.virt:
+    name: "{{ vm_name_worker2 }}"
     state: running
   register: vm_start_results
   until: "vm_start_results is success"
