@@ -36,8 +36,8 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/ubuntu/ansible_kvm/01-network-manager-all.yaml:/etc/netplan \
-      --firstboot /home/ubuntu/ansible_kvm/customize-commands.sh
+      --copy-in /home/ubuntu/ansible_kvm/01-network-manager_haproxy.yaml:/etc/netplan \
+      --firstboot /home/ubuntu/ansible_kvm/customize-commands_haproxy.sh
     when: copy_results is changed
   - name: Define vm
     community.libvirt.virt:
@@ -67,8 +67,8 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/ubuntu/ansible_kvm/01-network-manager-all.yaml:/etc/netplan \
-      --firstboot /home/ubuntu/ansible_kvm/customize-commands.sh
+      --copy-in /home/ubuntu/ansible_kvm/01-network-manager_master.yaml:/etc/netplan \
+      --firstboot /home/ubuntu/ansible_kvm/customize-commands_master.sh
     when: copy_results is changed
   - name: Define vm
     community.libvirt.virt:
@@ -98,8 +98,8 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/ubuntu/ansible_kvm/01-network-manager-all.yaml:/etc/netplan \
-      --firstboot /home/ubuntu/ansible_kvm/customize-commands.sh
+      --copy-in /home/ubuntu/ansible_kvm/01-network-manager_worker1.yaml:/etc/netplan \
+      --firstboot /home/ubuntu/ansible_kvm/customize-commands_worker.sh
     when: copy_results is changed
   - name: Define vm
     community.libvirt.virt:
@@ -129,8 +129,8 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/ubuntu/ansible_kvm/01-network-manager-all.yaml:/etc/netplan \
-      --firstboot /home/ubuntu/ansible_kvm/customize-commands.sh
+      --copy-in /home/ubuntu/ansible_kvm/01-network-manager_worker2.yaml:/etc/netplan \
+      --firstboot /home/ubuntu/ansible_kvm/customize-commands_worker.sh
     when: copy_results is changed
   - name: Define vm
     community.libvirt.virt:
