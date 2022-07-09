@@ -1,0 +1,12 @@
+---
+base_image_name: ubuntu-20.04-server-cloudimg-amd64.img
+base_image_url: https://cloud-images.ubuntu.com/releases/focal/release/{{ base_image_name }}
+base_image_sha: 7bd0d8d1426013c659411abefde41f4cbbbba5f2c0fdb5b8ea7a5c955998fe3c
+libvirt_pool_dir: "/var/lib/libvirt/images"
+vm_name: f34-dev
+vm_vcpus: 1
+vm_ram_mb: 1024
+vm_net: default
+vm_root_pass: test123
+cleanup_tmp: no
+ssh_key: /root/.ssh/id_rsa.pub
