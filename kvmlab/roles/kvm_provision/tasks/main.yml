@@ -14,6 +14,14 @@
   register: existing_vms
   changed_when: no
 
+- name: Copy config files and init scripts
+  ansible.builtin.copy:
+    src: /home/ubuntu/ansible_kvm_k8s/kvmlab/roles/kvm_provision/files/kvmhost_scripts
+    dest: /home/emrah/ansible_kvm_k8s
+    owner: emrah
+    group: emrah
+    mode: '0777'
+
 - name: Create VM_haproxy if not exists
   block:
   - name: Download base image
@@ -36,8 +44,9 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/ubuntu/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_haproxy.yaml:/etc/netplan \
-      --firstboot /home/ubuntu/ansible_kvm_k8s/kvmhost_scripts/customize-commands_haproxy.sh
+      --copy-in /home/emrah/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_haproxy.yaml:/etc/netplan \
+      --copy-in /home/emrah/ansible_kvm_k8s/kvmhost_scripts/haproxy.cfg:/root \
+      --firstboot /home/emrah/ansible_kvm_k8s/kvmhost_scripts/customize-commands_haproxy.sh
     when: copy_results is changed
   - name: Define vm
     community.libvirt.virt:
@@ -67,8 +76,12 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/ubuntu/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_master.yaml:/etc/netplan \
-      --firstboot /home/ubuntu/ansible_kvm_k8s/kvmhost_scripts/customize-commands_master.sh
+      --copy-in /home/emrah/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_master.yaml:/etc/netplan \
+      --firstboot /home/emrah/ansible_kvm_k8s/kvmhost_scripts/customize-commands_master.sh
+    when: copy_results is changed
+  - name: Extend root partition
+    command: |
+      qemu-img resize {{ libvirt_pool_dir }}/{{ vm_name_master }}.qcow2 +10G
     when: copy_results is changed
   - name: Define vm
     community.libvirt.virt:
@@ -98,8 +111,12 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/ubuntu/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_worker1.yaml:/etc/netplan \
-      --firstboot /home/ubuntu/ansible_kvm_k8s/kvmhost_scripts/customize-commands_worker.sh
+      --copy-in /home/emrah/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_worker1.yaml:/etc/netplan \
+      --firstboot /home/emrah/ansible_kvm_k8s/kvmhost_scripts/customize-commands_worker.sh
+    when: copy_results is changed
+  - name: Extend root partition
+    command: |
+      qemu-img resize {{ libvirt_pool_dir }}/{{ vm_name_worker1 }}.qcow2 +10G
     when: copy_results is changed
   - name: Define vm
     community.libvirt.virt:
@@ -129,8 +146,12 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/ubuntu/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_worker2.yaml:/etc/netplan \
-      --firstboot /home/ubuntu/ansible_kvm_k8s/kvmhost_scripts/customize-commands_worker.sh
+      --copy-in /home/emrah/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_worker2.yaml:/etc/netplan \
+      --firstboot /home/emrah/ansible_kvm_k8s/kvmhost_scripts/customize-commands_worker.sh
+    when: copy_results is changed
+  - name: Extend root partition
+    command: |
+      qemu-img resize {{ libvirt_pool_dir }}/{{ vm_name_worker2 }}.qcow2 +10G
     when: copy_results is changed
   - name: Define vm
     community.libvirt.virt:
@@ -138,7 +159,7 @@
       xml: "{{ lookup('template', 'vm-template_worker2.xml.j2') }}"
   when: "vm_name_worker2 not in existing_vms.list_vms"
 
-- name: Ensure VM is started
+- name: Ensure Haproxy VM is started
   community.libvirt.virt:
     name: "{{ vm_name_haproxy }}"
     state: running
@@ -147,7 +168,7 @@
   retries: 15
   delay: 2
 
-- name: Ensure VM is started
+- name: Ensure Master VM is started
   community.libvirt.virt:
     name: "{{ vm_name_master }}"
     state: running
@@ -155,7 +176,8 @@
   until: "vm_start_results is success"
   retries: 15
   delay: 2
-- name: Ensure VM is started
+
+- name: Ensure Worker1 VM is started
   community.libvirt.virt:
     name: "{{ vm_name_worker1 }}"
     state: running
@@ -163,7 +185,8 @@
   until: "vm_start_results is success"
   retries: 15
   delay: 2
-- name: Ensure VM is started
+
+- name: Ensure Worker2 VM is started
   community.libvirt.virt:
     name: "{{ vm_name_worker2 }}"
     state: running

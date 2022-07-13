@@ -1,7 +1,7 @@
 ---
 base_image_name: ubuntu-20.04-server-cloudimg-amd64.img
 base_image_url: https://cloud-images.ubuntu.com/releases/focal/release/{{ base_image_name }}
-base_image_sha: 7bd0d8d1426013c659411abefde41f4cbbbba5f2c0fdb5b8ea7a5c955998fe3c
+base_image_sha: 692406940d6a8d6eb8196732b83a7fcb9d5bed4bcf493526a1aece05ceca452b
 libvirt_pool_dir: "/var/lib/libvirt/images"
 vm_name_haproxy: haproxy
 vm_name_master: master
@@ -9,8 +9,8 @@ vm_name_worker1: worker1
 vm_name_worker2: worker2
 vm_all_list: "{{ vm_name_haproxy + vm_name_master + vm_name_worker1 + vm_name_worker2 }}"
 vm_master_vcpus: 2
-vm_vcpus: 1
-vm_ram_mb: 1024
+vm_vcpus: 2
+vm_ram_mb: 2048
 vm_net: default
 vm_root_pass: test123
 cleanup_tmp: no
