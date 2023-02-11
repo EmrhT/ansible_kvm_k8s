@@ -16,8 +16,8 @@
 
 - name: Copy config files and init scripts
   ansible.builtin.copy:
-    src: /home/ubuntu/ansible_kvm_k8s/kvmlab/roles/kvm_provision/files/kvmhost_scripts
-    dest: /home/emrah/ansible_kvm_k8s
+    src: ./roles/kvm_provision/files/kvmhost_scripts
+    dest: /tmp/
     owner: emrah
     group: emrah
     mode: '0777'
@@ -44,9 +44,9 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/emrah/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_haproxy.yaml:/etc/netplan \
-      --copy-in /home/emrah/ansible_kvm_k8s/kvmhost_scripts/haproxy.cfg:/root \
-      --firstboot /home/emrah/ansible_kvm_k8s/kvmhost_scripts/customize-commands_haproxy.sh
+      --copy-in /tmp/kvmhost_scripts/01-network-manager_haproxy.yaml:/etc/netplan \
+      --copy-in /tmp/kvmhost_scripts/haproxy.cfg:/root \
+      --firstboot /tmp/kvmhost_scripts/customize-commands_haproxy.sh
     when: copy_results is changed
   - name: Define vm
     community.libvirt.virt:

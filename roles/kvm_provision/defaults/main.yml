@@ -1,7 +1,7 @@
 ---
 base_image_name: ubuntu-20.04-server-cloudimg-amd64.img
 base_image_url: https://cloud-images.ubuntu.com/releases/focal/release/{{ base_image_name }}
-base_image_sha: 692406940d6a8d6eb8196732b83a7fcb9d5bed4bcf493526a1aece05ceca452b
+base_image_sha: eb20cd25da5d2193283951953f6a0f5bdbd57474ac19fd1c36b9b77e6b68bbfc
 libvirt_pool_dir: "/var/lib/libvirt/images"
 vm_name_haproxy: haproxy
 vm_name_master: master
