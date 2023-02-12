@@ -20,7 +20,7 @@
     dest: /tmp/
     owner: emrah
     group: emrah
-    mode: '0777'
+    mode: '0774'
 
 - name: Create VM_haproxy if not exists
   block:
