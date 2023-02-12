@@ -76,8 +76,8 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/emrah/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_master.yaml:/etc/netplan \
-      --firstboot /home/emrah/ansible_kvm_k8s/kvmhost_scripts/customize-commands_master.sh
+      --copy-in /tmp/kvmhost_scripts/01-network-manager_master.yaml:/etc/netplan \
+      --firstboot /tmp/kvmhost_scripts/customize-commands_master.sh
     when: copy_results is changed
   - name: Extend root partition
     command: |
@@ -111,8 +111,8 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/emrah/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_worker1.yaml:/etc/netplan \
-      --firstboot /home/emrah/ansible_kvm_k8s/kvmhost_scripts/customize-commands_worker.sh
+      --copy-in /tmp/kvmhost_scripts/01-network-manager_worker1.yaml:/etc/netplan \
+      --firstboot /tmp/kvmhost_scripts/customize-commands_worker.sh
     when: copy_results is changed
   - name: Extend root partition
     command: |
@@ -146,8 +146,8 @@
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
       --uninstall cloud-init \
-      --copy-in /home/emrah/ansible_kvm_k8s/kvmhost_scripts/01-network-manager_worker2.yaml:/etc/netplan \
-      --firstboot /home/emrah/ansible_kvm_k8s/kvmhost_scripts/customize-commands_worker.sh
+      --copy-in /tmp/kvmhost_scripts/01-network-manager_worker2.yaml:/etc/netplan \
+      --firstboot /tmp/kvmhost_scripts/customize-commands_worker.sh
     when: copy_results is changed
   - name: Extend root partition
     command: |
