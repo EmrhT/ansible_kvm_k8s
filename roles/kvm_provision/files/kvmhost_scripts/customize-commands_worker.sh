@@ -16,13 +16,13 @@
 /usr/bin/apt install containerd.io  >> /tmp/init.log && \
 /usr/bin/echo overlay >> /etc/modules-load.d/k8s.conf && \
 /usr/bin/echo br_netfilter >> /etc/modules-load.d/k8s.conf && \
-/usr/sbin/modprobe overlay &&  >> /tmp/init.log \
-/usr/sbin/modprobe br_netfilter &&  >> /tmp/init.log \
+/usr/sbin/modprobe overlay >> /tmp/init.log && \
+/usr/sbin/modprobe br_netfilter >> /tmp/init.log && \
 /usr/bin/echo net.bridge.bridge-nf-call-iptables  = 1 >> /etc/sysctl.d/k8s.conf && \
 /usr/bin/echo net.bridge.bridge-nf-call-ip6tables = 1 >> /etc/sysctl.d/k8s.conf && \
 /usr/bin/echo net.ipv4.ip_forward                 = 1 >> /etc/sysctl.d/k8s.conf && \
-/usr/sbin/sysctl --system &&  >> /tmp/init.log \
-/usr/bin/sed -i 's/cri//' /etc/containerd/config.toml  >> /tmp/init.log && \
+/usr/sbin/sysctl --system >> /tmp/init.log && \
+/usr/bin/sed -i 's/cri//' /etc/containerd/config.toml && \
 /usr/bin/systemctl restart containerd && \
 /usr/bin/systemctl enable --now containerd && \
 /usr/sbin/swapoff -a && \
