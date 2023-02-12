@@ -1,0 +1,7 @@
+        libvirt_pool_dir: "{{ pool_dir }}"
+        #        vm_name: "{{ vm }}"
+        #        vm_vcpus: "{{ vcpus }}"
+        vm_ram_mb: "{{ ram_mb }}"
+        vm_net: "{{ net }}"
+        cleanup_tmp: "{{ cleanup }}"
+        ssh_key: "{{ ssh_pub_key }}"

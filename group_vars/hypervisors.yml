@@ -1,0 +1,7 @@
+    pool_dir: "/var/lib/libvirt/images"
+    #    vm: f34-lab01
+    #    vcpus: 1
+    ram_mb: 2048
+    cleanup: no
+    net: default
+    ssh_pub_key: "/home/emrah/.ssh/id_rsa.pub"
