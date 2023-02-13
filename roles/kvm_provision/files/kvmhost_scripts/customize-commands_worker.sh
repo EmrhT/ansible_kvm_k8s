@@ -34,7 +34,8 @@
 /usr/bin/apt update && \
 /usr/bin/apt install -y kubelet kubeadm kubectl  >> /tmp/init.log && \
 /usr/bin/apt-mark hold kubelet kubeadm kubectl  >> /tmp/init.log && \
-/usr/bin/sleep 120 && \
+/usr/bin/sleep 150 && \
+/usr/bin/echo "I'm now awake and movin on!" >> /tmp/init.log && \ 
 CERT_HASH=`/usr/bin/curl http://192.168.122.20:8000/init.log 2>&1 | grep -A3 "worker nodes" | grep discovery-token | awk {'print $2'}` && \
 JOIN_TOKEN=`/usr/bin/curl http://192.168.122.20:8000/init.log 2>&1 | grep -A2 "worker nodes" | grep token | awk {'print $5'}` && \
 /usr/bin/kubeadm join 192.168.122.10:6443 --token $JOIN_TOKEN --discovery-token-ca-cert-hash $CERT_HASH >> /tmp/init.log 
