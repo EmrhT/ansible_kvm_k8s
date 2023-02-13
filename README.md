@@ -1,6 +1,6 @@
 # Deploying a HA-Ready Kubernetes Cluster on KVM with Ansible
 This repo provides code for an automated way of deploying a K8S cluster with Ansible on KVM hypervisor. 
-The project can be divided in three phases. First, cloud image is downloaded and customized accordingly using libguestfs popular tool virt-customize. Second, using the libvirt module and XML definition files, VMs were started on KVM hypervisor. And third, initialization scripts on each VM were run to deploy the K8S cluster. A medium story with more detailed discussion is here. --> 
+The project can be divided in three phases. First, cloud image is downloaded and customized accordingly using libguestfs popular tool virt-customize. Second, using the libvirt module and XML definition files, VMs were started on KVM hypervisor. And third, initialization scripts on each VM were run to deploy the K8S cluster. A medium story with more detailed discussion is here. --> https://medium.com/@emrah-t/kubernetes-cluster-up-and-running-in-seconds-with-ansible-devops-diaries-757374284f32
 
 ## Prerequisites
 1. A Linux computer (VM or physical) with the required KVM/libvirt components installed (kvmhost). --> https://linuxhint.com/install-kvm-ubuntu-22-04/
