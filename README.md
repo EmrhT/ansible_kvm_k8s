@@ -23,4 +23,6 @@ The project can be divided in three phases. First, cloud image is downloaded and
 1. Clone the repo.
 2. Go to directory playbook.yml stands and run "ansible-playbook playbook.yml -i inventory/hypervisors.yml"
 3. Follow the creation of VMs via virsh or Virtual Machine Manager. After seeing they're up, connect with console or SSH and follow logs in /tmp/init.log (screencast below).
-4. Final check with "kubectl get nodes" on the master node (screencast below). All bootstrapping lasts around 150 seconds on my home hardware.
+4. Final check with "kubectl get nodes" on the master node (screencast below). All bootstrapping lasts around 350 seconds on my home hardware.
+
+[screencast.webm](https://user-images.githubusercontent.com/33878173/218570725-419ffe88-88ab-40d0-a58b-e32e640914ff.webm)
