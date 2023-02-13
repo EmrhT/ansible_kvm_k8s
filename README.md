@@ -1,6 +1,6 @@
-# Kubernetes Cluster Up and Running with Ansible
+# Deploying a HA-Ready Kubernetes Cluster on KVM with Ansible
 This repo provides code for an automated way of deploying a K8S cluster with Ansible on KVM hypervisor. 
-The project can be divided in three phases. First, cloud images is downloaded and customized accordingly using libguestfs popular tool virt-customize. Second, using the libvirt module and XML definition files, VMs were started on KVM hypervisor. And third, initialization scripts on each VM were run to deploy the K8S cluster.
+The project can be divided in three phases. First, cloud image is downloaded and customized accordingly using libguestfs popular tool virt-customize. Second, using the libvirt module and XML definition files, VMs were started on KVM hypervisor. And third, initialization scripts on each VM were run to deploy the K8S cluster. A medium story with more detailed discussion is here. --> 
 
 ## Prerequisites
 1. A Linux computer (VM or physical) with the required KVM/libvirt components installed (kvmhost). --> https://linuxhint.com/install-kvm-ubuntu-22-04/
@@ -18,3 +18,9 @@ The project can be divided in three phases. First, cloud images is downloaded an
 8. Resulting topology is given below.
 
 ![image](https://user-images.githubusercontent.com/33878173/218461703-383eef06-a0e1-408d-aed5-cec9ad2b888f.png)
+
+## Execution
+1. Clone the repo.
+2. Go to directory playbook.yml stands and run "ansible-playbook playbook.yml -i inventory/hypervisors.yml"
+3. Follow the creation of VMs via virsh or Virtual Machine Manager. After seeing they're up, connect with console or SSH and follow logs in /tmp/init.log (screencast below).
+4. Final check with "kubectl get nodes" on the master node (screencast below). All bootstrapping lasts around 150 seconds on my home hardware.
